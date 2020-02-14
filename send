@@ -1,0 +1,28 @@
+{"data":{"operationType":"1","studentCode":"2186114147","electiveBatchCode":"01ffc28d54e1452cbf1e954ccd138ab9","teachingClassId":"201920202CORE10010101","isMajor":"1","campus":"1","teachingClassType":"XGXK"}}
+
+'code':'2' 'msg':'该课程已经存在选课结果中'
+'code':'1' 'msg':'添加选课志愿成功'
+'code':'2' 'msg':'该课程超过课容量'
+'code':'2' 'msg':'该课程与已选课程时间冲突'
+'code':'2' 'msg':'该课程不允许重修刷分'
+'code':'2' 'msg':'教学班不在开放选课轮次中'
+'code':'2' 'msg':'先修课程未满足'
+
+POST /xsxkapp/sys/xsxkapp/elective/recommendedCourse.do HTTP/1.1
+Host: xkfw.xjtu.edu.cn
+Connection: keep-alive
+Content-Length: 405
+Accept: application/json, text/javascript, */*; q=0.01
+X-Requested-With: XMLHttpRequest
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.100 Safari/537.36
+    token: 5890d6f4-63d9-4ea7-bb02-1e10e5f0538b
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+Origin: http://xkfw.xjtu.edu.cn
+Referer: http://xkfw.xjtu.edu.cn/xsxkapp/sys/xsxkapp/*default/grablessons.do?token=5890d6f4-63d9-4ea7-bb02-1e10e5f0538b
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9,en;q=0.8
+    Cookie: _WEU=dHnd9Pycf2sSw7D3Ln*ztQlKynvfLahjekpMhKoAEg*blOzLe7tzkj..; AUTHTGC="0Rhw9gH2am0mTjzUyDMuxRVylitjre1NxW7bYpx1VT2RVFZzMfBVJQ=="; MOD_AMP_AUTH=MOD_AMP_8a71ad4f-29dd-4ba4-b8ad-b7a702755b13; JSESSIONID=UfNACtRTKyMGY5BZcNIW6A-SKRBzQBl-ERzFz9MaJomIvPj-bO62!396887896
+
+
+'{"data":{"studentCode":2186114147,"campus":"1","electiveBatchCode":"01ffc28d54e1452cbf1e954ccd138ab9","isMajor":"1","teachingClassType":"TJKC","checkConflict":"2","checkCapacity":"2","queryContent":""},"pageSize":"10","pageNumber":"0","order":""}'
+'{"data":{"studentCode":2186114147,"campus":"1","electiveBatchCode":"01ffc28d54e1452cbf1e954ccd138ab9","isMajor":"1","teachingClassctype":"TJKC","checkConflict":"2","checkCapacity":"2","queryContent":""},"pageSize":"10","pageNumber":"0","order":""}'

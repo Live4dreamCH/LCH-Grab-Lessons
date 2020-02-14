@@ -1,0 +1,145 @@
+res = 
+res['dataList'][0]['tcList'][0]['teachingClassID']
+{
+	# 字典，存一页的信息
+	"totalCount": 22,
+	"code": "1",
+	"msg": "查询数据成功",
+	"timestamp": "23"
+
+	"dataList":
+	[	# 存10000个课程的列表
+		{	# 存一门课程的字典
+			"courseNatureName": "必修",
+			"selected": true,
+			'courseNumber': 'COMP450305',
+			'courseName': '形式语言与编译',
+			'typeName': '专业核心课程',
+			'hours': '56',
+			'credit': '3.5',
+
+			"tcList":
+			[	# 存多个班级的列表
+				{	#存一个班级的字典
+					"isConflict": "0",
+					"courseIndex": "03",
+					'isChoose': '1',
+					'teacherName': '李波',
+					'teachingPlace': '1-14周 星期一 7-8节 主楼D-204,1-14周 星期三 1-2节 主楼D-204',
+					'teachingMethod': '面授讲课',
+				}
+			],
+		},
+	],
+}
+
+选修
+	res['dataList'][0]['teachingClassID']
+	res['dataList'][0]['campusName']
+	
+	res['dataList'][0]['courseIndex']
+
+	res['dataList'][0]['courseName']
+	res['dataList'][0]['courseNatureName']
+
+	
+	res['dataList'][0]['courseNumber']
+
+
+	res['dataList'][0]['courseTypeName']
+	res['dataList'][0]['credit']
+	res['dataList'][0]['hours']
+	res['dataList'][0]['isConflict']
+	res['dataList'][0]['publicCourseTypeName']
+	res['dataList'][0]['teacherName']
+	res['dataList'][0]['teacherNameList']
+	res['dataList'][0]['teachingMethod']
+	res['dataList'][0]['teachingPlace']
+
+
+方案内
+	res['dataList'][0]['courseName']
+	res['dataList'][10]['courseNatureName']
+
+
+	res['dataList'][10]['courseNumber']
+
+
+	res['dataList'][10]['credit']
+	res['dataList'][10]['hours']
+	res['dataList'][10]['selected']
+	res['dataList'][10]['typeName']
+		res['dataList'][10]['tcList'][0]['isConflict']
+		res['dataList'][10]['tcList'][0]['teacherName']
+
+		res['dataList'][10]['tcList'][0]['courseIndex']
+
+		res['dataList'][10]['tcList'][0]['teachingMethod']
+		res['dataList'][10]['tcList'][0]['teachingPlace']
+		res['dataList'][0]['tcList'][0]['isChoose']
+	
+
+方案外课程
+	res['dataList'][0]['courseName']
+	res['dataList'][0]['courseNatureName']
+
+
+	res['dataList'][0]['courseNumber']
+
+
+	res['dataList'][0]['credit']
+	res['dataList'][0]['hours']
+	res['dataList'][0]['selected']
+	res['dataList'][0]['typeName']
+
+		res['dataList'][0]['tcList'][0]['courseIndex']
+
+		res['dataList'][0]['tcList'][0]['isConflict']
+		res['dataList'][0]['tcList'][0]['isChoose']
+		res['dataList'][0]['tcList'][0]['teacherName']
+		res['dataList'][0]['tcList'][0]['teachingMethod']
+		res['dataList'][0]['tcList'][0]['teachingPlace']
+
+
+体育
+	res['dataList'][0]['courseName']
+	res['dataList'][0]['courseNatureName']
+	res['dataList'][0]['credit']
+
+	res['dataList'][0]['courseNumber']
+
+	
+	res['dataList'][0]['hours']
+	res['dataList'][0]['selected']
+	res['dataList'][0]['typeName']
+
+		res['dataList'][0]['tcList'][0]['courseIndex']
+
+		res['dataList'][0]['tcList'][0]['isConflict']
+		res['dataList'][0]['tcList'][0]['sportName']
+		res['dataList'][0]['tcList'][0]['teacherName']
+		res['dataList'][0]['tcList'][0]['teachingMethod']
+		res['dataList'][0]['tcList'][0]['teachingPlace']
+		res['dataList'][0]['tcList'][0]['isChoose']
+
+
+重修
+	res['dataList'][0]['courseName']
+	res['dataList'][0]['courseNatureName']
+
+
+	res['dataList'][0]['courseNumber']
+
+
+	res['dataList'][0]['credit']
+	res['dataList'][0]['hours']
+	res['dataList'][0]['selected']
+	res['dataList'][0]['typeName']
+
+		res['dataList'][0]['tcList'][0]['courseIndex']
+
+		res['dataList'][0]['tcList'][0]['isConflict']
+		res['dataList'][0]['tcList'][0]['teacherName']
+		res['dataList'][0]['tcList'][0]['teachingMethod']
+		res['dataList'][0]['tcList'][0]['teachingPlace']
+		res['dataList'][0]['tcList'][0]['isChoose']
