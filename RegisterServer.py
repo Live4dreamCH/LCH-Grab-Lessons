@@ -120,8 +120,9 @@ if __name__ == '__main__':
             # print(print_exc())
             print('mac_list 从 macs.dat 中恢复成功！')
     LAN = '127.0.0.1'
-    port = 15973
-    add = (LAN, port)
+    IP = '172.17.0.11'
+    port = 42319
+    add = (IP, port)
     server = socketserver.ThreadingTCPServer(add, MyServer)
     print('server started')    
     server.serve_forever()
