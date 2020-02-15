@@ -38,8 +38,9 @@ def register():
     # 脑洞：每次开始时都下载下一次连接
     link = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     LAN = '127.0.0.1'
-    port = 15973
-    link.connect((LAN, port))
+    IP = '111.231.137.179'
+    port = 42319
+    link.connect((IP, port))
     print('连接注册服务器端成功！')
     link.send(my_encode(mac))
     registered = my_decode(link.recv(1024))
