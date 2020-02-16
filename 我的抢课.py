@@ -9,16 +9,17 @@ import json
 from pickle import dump, load
 from uuid import uuid1
 from re import findall
-import random
-import string
+from random import sample
+from string import ascii_letters, digits
 import socket
 import os
+from traceback import print_exc
 
 def my_encode(mac):
     maclist = list(mac)
     for i in range(len(maclist)):
         maclist[i] = chr((ord(maclist[i])+i**3) % 128)
-    newmac = "".join(maclist) + ''.join(random.sample(string.ascii_letters + string.digits, 10))
+    newmac = "".join(maclist) + ''.join(sample(ascii_letters + digits, 10))
     return newmac.encode('utf-8')
 
 def my_decode(newmac):
@@ -37,8 +38,10 @@ def register():
     # 上传mac
     # 脑洞：每次开始时都下载下一次连接
     link = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    LAN = '127.0.0.1'
+    # LAN = '127.0.0.1'
+    domain = 'www.live4dreamch.xyz'
     IP = '111.231.137.179'
+    IP = socket.gethostbyname(domain)
     port = 42319
     link.connect((IP, port))
     print('连接注册服务器端成功！')
@@ -79,8 +82,8 @@ def login():
             'Cookie': cookiestr
         }
         res = get(url_gettoken, headers=headers_1).json()
-    except Exception as e:
-        print('读取记录失败：', e.__class__.__name__, str(e))
+    except Exception:
+        print(print_exc())
         StuID = input('输入学号：')
         if StuID == '0':
             StuID = '2186114147'
@@ -230,11 +233,12 @@ def download(StuID, headers, eBC):
                     dump(courses, f)
                 global a
                 print(a[mode], '加载成功！')
-            except Exception as e:
-                print(e.__class__.__name__, str(e))
+            except Exception:
+                print(print_exc())
                 print('此类课程无法加载:', a[mode])
         print('加载完毕！\n')
-    f.close()
+        os.system('pause')
+    # f.close()
     # print(courses)
     return courses
 
@@ -397,8 +401,9 @@ def grabbing(StuID, eBC, ID, ctype, delay, flag, courseID):
                     flag[courseID]['reason'] = res['msg']
                     print('\n', res['msg'], '，无法选此课程！,课程号：', ID)
                     break
-        except Exception as e:
-            print('\n异常:', e.__class__.__name__, str(e))
+        except Exception:
+            print('\n异常:')
+            print(print_exc())
             print('\n线程出错了！请检查选课服务器状态、电脑运行环境。此课程号：', ID)
             if c == '想不到':
                 c = input('是否继续（且不再提示，反复尝试）？[是/否]（默认为否）')
@@ -409,54 +414,58 @@ def grabbing(StuID, eBC, ID, ctype, delay, flag, courseID):
 
 
 if __name__ == '__main__':
-    if os.path.exists('/GrabLessons') == False:
-        os.mkdir('/GrabLessons')
-    # form = "{0:{7}<4}\t{1:{7}<7}\t{2:{7}<4}\t{3:{7}<4}\t{4:{7}<2}\t{5:{7}<2}\t{6:<}"
-    # form1 = "{0:{7}<4}{1:{7}<7}{2:{7}<4}{3:{7}<4}{4:{7}<2}{5:{7}<2}{6:<}"
-    a = {'TJKC':'推荐课程', 'FANKC':'方案内跨年级课程', 'FAWKC':'方案外课程', 'XGXK':'基础通识类(核心/选修)', 'CXKC':'重修课程', 'TYKC':'主修课程(体育)'}
-    StuID, headers, eBC = login()
-    # grabbing(StuID, eBC, '201920202COMP55040501', "FAWKC", 0.2)
-    courses = download(StuID, headers, eBC)
-    print('\n请输入需要抢的课程编号、班级编号，允许的格式:\nCORE100101[01]\nCORE100101 01(不要忘记01的0)\nCORE100101(如果不输入班级编号，则在此课程下随机选择一个班级)\n若输入exit，则结束添加待选课程\n')
-    sleep(3)
-    grab_list = list()
-    flag = dict()
-    while True:
-        required_list, courseID = search(courses)
-        if required_list == True:
-            break
-        elif required_list == False:
-            continue
-        flag[courseID] = 1
-        for i in range(len(required_list)):
-            grab_list.append((required_list[i][0], required_list[i][1], courseID))
-    print('\n在出现结束提示，允许关闭程序前不要关闭程序！')
-    print('\n请尽可能在开始一段时间内保持注意，以应对特殊情况，过程中请保持网络通畅')
-    d = input('\n请输入尝试周期（单位：秒，默认：0.5）：')
-    if d == '':
-        d = 0.5
-    else:
-        d = float(d)
-    input('按回车开始抢课')
-    print('以下是抢课实时情况：\n')
-    thread_list = list()
-    for i in range(len(grab_list)):
-        thread = myThread(StuID, eBC, grab_list[i][0], grab_list[i][1], flag, grab_list[i][2], d)
-        thread_list.append(thread)
-        thread.start()
-        sleep(0.1)
-    for thread in thread_list:
-        thread.join()
-
-    print('\n\n选课结果：')
-    for courseID in list(flag.keys()):
-        name = courses[courseID]['courseName']
-        if flag[courseID] == 0:
-            print(name, '：选课成功')
-        elif flag[courseID]['code'] == 2:
-            print(name, '：选课失败,原因：', flag[courseID]['reason'])
+    try:
+        if os.path.exists('/GrabLessons') == False:
+            os.mkdir('/GrabLessons')
+        # form = "{0:{7}<4}\t{1:{7}<7}\t{2:{7}<4}\t{3:{7}<4}\t{4:{7}<2}\t{5:{7}<2}\t{6:<}"
+        # form1 = "{0:{7}<4}{1:{7}<7}{2:{7}<4}{3:{7}<4}{4:{7}<2}{5:{7}<2}{6:<}"
+        a = {'TJKC':'推荐课程', 'FANKC':'方案内跨年级课程', 'FAWKC':'方案外课程', 'XGXK':'基础通识类(核心/选修)', 'CXKC':'重修课程', 'TYKC':'主修课程(体育)'}
+        StuID, headers, eBC = login()
+        # grabbing(StuID, eBC, '201920202COMP55040501', "FAWKC", 0.2)
+        courses = download(StuID, headers, eBC)
+        print('\n请输入需要抢的课程编号、班级编号，允许的格式:\nCORE100101[01]\nCORE100101 01(不要忘记01的0)\nCORE100101(如果不输入班级编号，则在此课程下随机选择一个班级)\n若输入exit，则结束添加待选课程\n')
+        sleep(3)
+        grab_list = list()
+        flag = dict()
+        while True:
+            required_list, courseID = search(courses)
+            if required_list == True:
+                break
+            elif required_list == False:
+                continue
+            flag[courseID] = 1
+            for i in range(len(required_list)):
+                grab_list.append((required_list[i][0], required_list[i][1], courseID))
+        print('\n在出现结束提示，允许关闭程序前不要关闭程序！')
+        print('\n请尽可能在开始一段时间内保持注意，以应对特殊情况，过程中请保持网络通畅')
+        d = input('\n请输入尝试周期（单位：秒，默认：0.5）：')
+        if d == '':
+            d = 0.5
         else:
-            print(name, '：选课失败')
-    print('\n')
-    input('所有抢课任务都已结束，去网页抢课端看看吧！您现在可以安全地关闭程序，回车退出')
+            d = float(d)
+        input('按回车开始抢课')
+        print('以下是抢课实时情况：\n')
+        thread_list = list()
+        for i in range(len(grab_list)):
+            thread = myThread(StuID, eBC, grab_list[i][0], grab_list[i][1], flag, grab_list[i][2], d)
+            thread_list.append(thread)
+            thread.start()
+            sleep(0.1)
+        for thread in thread_list:
+            thread.join()
+
+        print('\n\n选课结果：')
+        for courseID in list(flag.keys()):
+            name = courses[courseID]['courseName']
+            if flag[courseID] == 0:
+                print(name, '：选课成功')
+            elif flag[courseID]['code'] == 2:
+                print(name, '：选课失败,原因：', flag[courseID]['reason'])
+            else:
+                print(name, '：选课失败')
+        print('\n')
+        input('所有抢课任务都已结束，去网页抢课端看看吧！您现在可以安全地关闭程序，回车退出')
+    except Exception:
+        print(print_exc())
+        os.system('pause')
 # 现有问题：会把英语自习所有能选的班都选一遍，导致其他课程冲突        已解决
