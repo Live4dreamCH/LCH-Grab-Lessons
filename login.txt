@@ -1,0 +1,17 @@
+输用户名后切换到密码栏：
+
+getIsShowJcaptchaCode
+Cookie: route=a3bd3ffc3d7852ff2de7c604a51733cd; JSESSIONID=F0636C3CB263C233B5127729AE45ACEE; app_info_urla=+L4rB7r6yuXaNSyCPpJbv37GCbbuXhbEZ/qFiels81u38P4uqqTgoCG6/OeB13xANyc3U/KciIkaUIyMOZj+nSzforMLmGm9sIsTr4XffJQo3GI/5/EaWaxqg2NwOKqc3DXU57Q4WDN9TRMJq/IYL1Ea6doo2giihMEDHMGTuYQE5iaEdaEO5axRRGbYx963; cur_appId_=Wh+FE117l+4=; state=xjdCas; sid_code=workbench_login_jcaptcha_F0636C3CB263C233B5127729AE45ACEE
+userName: 2186114147
+_: 1581863215801
+
+输密码后：
+
+login
+loginType: 1
+username: "2186114147"
+pwd: "LCzBICBsiIKNn/VByB3wRw=="
+      LCzBICBsiIKNn/VByB3wRw==
+      lchAK47.423lchAK47.423
+      8P3REodu+53EC3ooDkJCSw
+      000123456789

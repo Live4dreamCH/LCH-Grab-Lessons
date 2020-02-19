@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+# 客户端
+# 以下多用from···import，意在减小打包后的程序体积
 from threading import Thread
 from time import sleep, time
 from selenium.webdriver import Chrome
@@ -16,6 +18,7 @@ import os
 from traceback import print_exc
 
 def my_encode(mac):
+    """与服务器端一致的加密解密"""
     maclist = list(mac)
     for i in range(len(maclist)):
         maclist[i] = chr((ord(maclist[i])+i**3) % 128)
@@ -23,6 +26,7 @@ def my_encode(mac):
     return newmac.encode('utf-8')
 
 def my_decode(newmac):
+    """与服务器端一致的加密解密"""
     newmac = newmac.decode('utf-8')
     l = len(newmac) - 10
     mac = newmac[:l]
@@ -33,10 +37,11 @@ def my_decode(newmac):
     return newmac
 
 def register():
+    """注册环节，仅与MAC有关，无需存储任何临时文件，即使软件升级移动、系统重装、临时文件被删除，仍然可以正常使用"""
     # 获取mac
     mac = "-".join(findall(r".{2}",uuid1().hex[-12:].upper()))
     # 上传mac
-    # 脑洞：每次开始时都下载下一次连接
+    # 脑洞：每次开始时都下载下一次连接  不需要，只要用域名就好了，域名可以修改其所指向的ip
     link = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # LAN = '127.0.0.1'
     domain = 'www.live4dreamch.xyz'
@@ -63,11 +68,15 @@ def register():
         exit(0)
 
 def login():
+    """登录，获取cookies、token和electiveBatchCode
+    
+    可惜的是仍然需要下载配置ChromeDriver"""
     print('欢迎试用！本程序仅用于学习、交流程序设计方法，不当使用责任自负！\n')
     sleep(1)
     register()
 
     try:
+        # 试下存的cookies，达成短期免登录的效果
         with open('/GrabLessons/Cookies.json', 'r', encoding='utf-8') as f:
             cookie2 = f.readline().rstrip('\n')
             StuID = f.readline()
@@ -94,6 +103,7 @@ def login():
         # eBC = '01ffc28d54e1452cbf1e954ccd138ab9'
 
         # 获取登录Cookie
+        # 改成无头模式后，网页判断为移动端，加载的网页不同，原方法失效
         # option = Options()
         # option.headless = True
         # driver = Chrome(options = option)
@@ -139,6 +149,9 @@ def login():
     return StuID, headers, eBC
 
 def get_eBC(StuID, headers):
+    """第一次尝试爬虫，爬electiveBatchCode：轮次代码
+    
+    有个问题是如果当前存在多个轮次，则默认选取第一个，这对选择特殊轮次的人很不利"""
     timestamp = str(round(time() *1000))
     url = 'http://xkfw.xjtu.edu.cn/xsxkapp/sys/xsxkapp/student/' + StuID + '.do?timestamp=' + timestamp
     res = get(url, headers=headers).json()
@@ -147,6 +160,11 @@ def get_eBC(StuID, headers):
     return eBC
 
 def download(StuID, headers, eBC):
+    """加载所有课程列表到本地，这是为了避免网络问题在后续抢课时的影响
+    
+    问题：加载后的更改，目前还不能写入本地文件，造成信息上下不同步
+    
+    本地存储的数据结构见 course.jpg"""
     try:
         with open('/GrabLessons/Caches.data', 'rb') as f:
             feBC = load(f)
@@ -243,16 +261,19 @@ def download(StuID, headers, eBC):
     return courses
 
 def search(courses):
+    """通过课程号和班级号，在本地文件中搜索想选择的课程，并用show函数展示其信息
+    
+    如果只输入课程号，则展示其下的所有班级。针对英语自习等课程，任选其一即可而设计。"""
     print('\n')
     ID = input('输入(exit为结束输入):')
     if ID == 'exit':
-        return True, 0
+        return True, 0  #  第二个参数没用，但已经这样不想改了
     if ID == '':
         return False, 0
     ID = ID.replace('[', ' ').rstrip(']').strip()
-    courseID = ID.split()[0]
+    courseID = ID.split()[0]  # 课程号
     if len(ID.split()) == 2:
-        classID = int(ID.split()[1])
+        classID = int(ID.split()[1])  # 班级号
         if courses.get(courseID, False) == False:
             print('课程编号错误，无此课程！\n')
             # 跳出此次循环，重新输入
@@ -317,6 +338,9 @@ def search(courses):
             return False, 0
 
 def show_course(courseID, course):
+    """展示课程信息
+    
+    用format函数对齐打印出来，注意上下必须同时为中文或非中文，否则无法对齐"""
     global a
     # global form
     # global form1
@@ -332,6 +356,7 @@ def show_course(courseID, course):
         print(form.format(courseID, course['courseName'], course['typeName'], course['courseNatureName'], course['credit'], course['hours'], a[course['type']], chr(12288)), '\n')
 
 def show_class(course, classID, tclass):
+    """展示班级信息"""
     global a
     choosable = '可选'
     if tclass['isChoose'] == '1':
@@ -347,7 +372,9 @@ def show_class(course, classID, tclass):
 
 
 class myThread (Thread):
+    """多线程，调用threading库，需要新建一个类，继承Thread，并且重载run函数"""
     def __init__(self, StuID, eBC, ID, ctype, flag, courseID, delay = 0.5):
+        """传抢课需要的参"""
         Thread.__init__(self)
         self.delay = delay
         self.StuID = StuID
@@ -357,12 +384,24 @@ class myThread (Thread):
         self.flag = flag
         self.courseID = courseID
     def run(self):
+        """每一个线程做的事"""
         print ("\n开始抢课：" + self.ID)
         grabbing(self.StuID, self.eBC, self.ID, self.ctype, self.delay, self.flag, self.courseID)
         print ("\n结束抢课：" + self.ID)
 
 
 def grabbing(StuID, eBC, ID, ctype, delay, flag, courseID):
+    """无限抢课大法。
+    
+    就是发包，用返回值确定抢课结果：
+    
+    如果1，就成功了，通过改变flag[courseID]，通知所有正在抢课的线程自杀；
+    
+    如果2且课程由于种种原因不可选，则也同上。
+
+    以上操作是为了积极杀线程，因为线程稍多就会引起崩溃。
+    
+    如果2且是因为课程人满了，就继续尝试。"""
     c = '想不到'
     url = 'http://xkfw.xjtu.edu.cn/xsxkapp/sys/xsxkapp/elective/volunteer.do'
     param = {
@@ -414,6 +453,7 @@ def grabbing(StuID, eBC, ID, ctype, delay, flag, courseID):
 
 
 if __name__ == '__main__':
+    """主函数，整个过程的流程控制基本都在这里了，挺繁琐的"""
     try:
         if os.path.exists('/GrabLessons') == False:
             os.mkdir('/GrabLessons')
